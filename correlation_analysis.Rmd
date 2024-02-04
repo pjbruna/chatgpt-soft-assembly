@@ -1,0 +1,597 @@
+---
+title: "ChatGPT Mental Lexicon - analyses"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(lmerTest)
+library(emmeans)
+```
+
+# ChatGPT vs. SCOPE database
+
+```{r}
+# Load data
+gpt_data <- read_csv("data/data_compiled.csv",
+                     col_types = cols(value = col_number(),
+                                      condition = col_factor(levels = c("20", "20b", "Rand", "Sort")),
+                                      variable = col_factor(levels = c("aoa", "aoakup", "arousal", "cd", "conc", "dom",
+                                        "fam", "freq", "gender", "humor", "image", "meanings", "semdiv", "size", "social", "valence")),
+                                      model = col_factor(levels = c("35", "4")))) %>%
+  mutate(word = case_when(word == "salon" ~ "saloon", T ~ word), # ChatGPT's typo
+         value = case_when(variable == "cd" ~ log10(((value/1000) * 8388)+1), # Scale and log "cd" and "freq" measures in the gpt data
+                           variable == "freq" ~ log10(((value/1000000) * 51000000)+1),
+                           TRUE ~ value))
+  
+scope_data <- read_csv("data/words390.csv") %>%
+  rename(word = Word) %>%
+  pivot_longer(cols = !word, names_to = "variable", values_to = "value") %>%
+  mutate(value = as.numeric(value))
+
+
+```
+
+```{r}
+# Helper lists
+
+conditions = c("20", "20b", "Rand", "Sort") # 20 = randomized word order; 20b = same word order as "20"; Rand = new, random word order; Sort = word order sorted lowest to highest correlation value
+models = c("35", "4") # ChatGPT version
+variables <- c("aoa", "aoakup", "arousal", "cd", "conc", "dom", "fam", "freq", "gender", "humor", "image", "meanings", "semdiv", "size", "social", "valence") # SCOPE psycholinguistic variables
+```
+
+## Correlations
+
+```{r}
+# Correlate ChatGPT performance with "ground-truth" SCOPE database for each variable
+
+correlation_df <- data.frame(condition = c(), model = c(), variable = c(), cor = c())
+
+for(c in 1:length(conditions)){
+  for(m in 1:length(models)){
+    for(v in 1:length(variables)){
+      filtered_gpt <- gpt_data %>%
+        filter(condition == conditions[c],
+               model == models[m],
+               variable == variables[v]) %>%
+        select(word, value)
+      
+      filtered_scope <- scope_data %>%
+        filter(variable == variables[v]) %>%
+        select(word, value)
+      
+      filtered_gpt <- filtered_gpt[order(filtered_gpt$word),]
+      filtered_scope <- filtered_scope[order(filtered_scope$word),]
+
+      temp_df <- data.frame(condition = conditions[c],
+                            model = models[m],
+                            variable = variables[v],
+                            cor = cor(filtered_gpt$value, filtered_scope$value, method = "pearson"))
+      
+      correlation_df <- rbind(correlation_df, temp_df)
+    }
+  }
+}
+```
+
+```{r}
+# Print correlation tables
+
+correlation_df %>% filter(condition == "20") %>% pivot_wider(names_from = model, values_from = cor) %>% mutate(abs_diff = abs(`4` - `35`))
+correlation_df %>% filter(condition == "20b") %>% pivot_wider(names_from = model, values_from = cor) %>% mutate(abs_diff = abs(`4` - `35`))
+correlation_df %>% filter(condition == "Rand") %>% pivot_wider(names_from = model, values_from = cor) %>% mutate(abs_diff = abs(`4` - `35`))
+correlation_df %>% filter(condition == "Sort") %>% pivot_wider(names_from = model, values_from = cor) %>% mutate(abs_diff = abs(`4` - `35`))
+```
+
+```{r}
+# Fisher transform correlations into Z-scores
+
+correlation_df <- correlation_df %>%
+  mutate(fisher_z = 0.5 * (log(1+cor) - log(1-cor)))
+```
+
+
+## Avg. difference between 3.5 and 4
+
+```{r}
+# Averages (Fisher transformed)
+
+correlation_df %>%
+  pivot_wider(id_cols = !cor, names_from = model, values_from = fisher_z) %>%
+  mutate(abs_diff = abs(`4` - `35`)) %>%
+  group_by(condition) %>%
+  summarise(avg_35 = mean(`35`),
+            avg_4 = mean(`4`),
+            avg_abs_diff = mean(abs_diff))
+```
+
+## Stochasticity in GPT performance
+
+```{r}
+# Difference between corpus and ChatGPT values for each variable
+
+# scope_data_expanded <- scope_data[rep(seq_len(nrow(scope_data)), each = 4),]
+# scope_data_expanded$model = "corpus"
+# scope_data_expanded$condition = rep(c("20", "20b", "Rand", "Sort"), nrow(scope_data_expanded)/4)
+
+gpt_stoch <- gpt_data %>%
+  pivot_wider(names_from = condition, values_from = value) %>%
+  mutate(abs_diff = abs(`20` - `20b`)) %>%
+  group_by(model, variable) %>%
+  summarize(avg = mean(abs_diff)) # %>%
+  # summarize(grand_avg = mean(avg))
+
+gpt_stoch %>% pivot_wider(names_from = model, values_from = avg)
+```
+
+# Glasgow Data
+
+```{r}
+glasgow_data <- read_csv("data/glasgow-main.csv") %>%
+  rename(word = WORD, length = LENGTH)
+
+# Tidy data
+
+arousal_stats <- glasgow_data %>% select(word, length, SD...4, N...5) %>% mutate(variable = "arousal")
+valence_stats <- glasgow_data %>% select(word, length, SD...7, N...8) %>% mutate(variable = "valence")
+dom_stats <- glasgow_data %>% select(word, length, SD...10, N...11) %>% mutate(variable = "dom")
+conc_stats <- glasgow_data %>% select(word, length, SD...13, N...14) %>% mutate(variable = "conc")
+image_stats <- glasgow_data %>% select(word, length, SD...16, N...17) %>% mutate(variable = "image")
+fam_stats <- glasgow_data %>% select(word, length, SD...19, N...20) %>% mutate(variable = "fam")
+aoa_stats <- glasgow_data %>% select(word, length, SD...22, N...23) %>% mutate(variable = "aoa")
+size_stats <- glasgow_data %>% select(word, length, SD...25, N...26) %>% mutate(variable = "size")
+gender_stats <- glasgow_data %>% select(word, length, SD...28, N...29) %>% mutate(variable = "gender")
+
+colnames(arousal_stats) <- c("word", "length", "sd", "sample_size", "variable")
+colnames(valence_stats) <- c("word", "length", "sd", "sample_size", "variable")
+colnames(dom_stats) <- c("word", "length", "sd", "sample_size", "variable")
+colnames(conc_stats) <- c("word", "length", "sd", "sample_size", "variable")
+colnames(image_stats) <- c("word", "length", "sd", "sample_size", "variable")
+colnames(fam_stats) <- c("word", "length", "sd", "sample_size", "variable")
+colnames(aoa_stats) <- c("word", "length", "sd", "sample_size","variable")
+colnames(size_stats) <- c("word", "length", "sd", "sample_size","variable")
+colnames(gender_stats) <- c("word", "length", "sd", "sample_size","variable")
+
+glasgow_stats <- rbind(arousal_stats, valence_stats, dom_stats, conc_stats,
+                       image_stats, fam_stats, aoa_stats, size_stats, gender_stats)
+
+glasgow_data_filtered <- glasgow_data %>%
+  select(word, arousal, valence, dom, conc, image, fam, aoa, size, gender) %>%
+  pivot_longer(cols = !c(word), names_to = "variable", values_to = "value")
+```
+
+```{r}
+# Helper lists
+
+glasgow_variables <- c("arousal", "valence", "dom", "conc", "image", "fam", "aoa", "size", "gender") # Glasgow psycholinguistic variables
+```
+
+## Correlations
+
+```{r}
+# Correlate ChatGPT performance with "ground-truth" Glasgow data for each variable
+
+glasgow_correlation_df <- data.frame(condition = c(), model = c(), variable = c(), cor = c())
+
+for(c in 1:length(conditions)){
+  for(m in 1:length(models)){
+    for(v in 1:length(glasgow_variables)){
+      filtered_gpt <- gpt_data %>%
+        filter(condition == conditions[c],
+               model == models[m],
+               variable == glasgow_variables[v]) %>%
+        select(word, value)
+      
+      filtered_glasgow <- glasgow_data_filtered %>%
+        filter(variable == glasgow_variables[v]) %>%
+        select(word, value)
+      
+      filtered_gpt <- filtered_gpt[order(filtered_gpt$word),]
+      filtered_glasgow <- filtered_glasgow[order(filtered_glasgow$word),]
+
+      temp_df <- data.frame(condition = conditions[c],
+                            model = models[m],
+                            variable = glasgow_variables[v],
+                            cor = cor(filtered_gpt$value, filtered_glasgow$value, method = "pearson"))
+      
+      glasgow_correlation_df <- rbind(glasgow_correlation_df, temp_df)
+    }
+  }
+}
+```
+
+## Plot R by SD
+
+```{r}
+# Fisher transform correlations into Z-scores
+
+glasgow_correlation_df <- glasgow_correlation_df %>%
+  mutate(fisher_z = 0.5 * (log(1+cor) - log(1-cor)))
+```
+
+```{r}
+# Plot avg. correlation coefficient by avg. SD for each variable
+
+avg_glasgow_stats <- glasgow_stats %>%
+  group_by(variable) %>%
+  summarize(avg_sd = mean(sd))
+
+avg_glasgow_correlation <- glasgow_correlation_df %>%
+  filter(condition %in% c("20", "20b")) %>%
+  group_by(model, variable) %>%
+  summarize(avg_fisher_z = mean(fisher_z), avg_cor = mean(cor)) %>%
+  mutate(avg_sd = rep(avg_glasgow_stats$avg_sd))
+
+ggplot(avg_glasgow_correlation, aes(x = avg_sd, y = avg_cor, color = model)) +
+  geom_point() +
+  geom_smooth(method = "lm", aes(fill = model), alpha = 0.1) +
+  scale_color_discrete(labels=c("ChatGPT 3.5", "ChatGPT 4")) +
+  labs(x = "Glasgow standard deviation (averaged over items)", y = "Correlation coefficient (averaged over runs)", color = "Model") +
+  theme_bw() +
+  guides(fill = "none") +
+  theme(legend.position = c(0.85, 0.85),
+        axis.title = element_text(size = 14),
+        axis.text = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14))
+
+# ggsave(file = "RxSD.png", width = 7, height = 5)
+```
+
+```{r}
+# r statistic, per model:
+
+# sqrt(summary(lm(avg_fisher_z ~ avg_sd, data = avg_glasgow_correlation %>% filter(model == "35")))$r.squared)
+# sqrt(summary(lm(avg_fisher_z ~ avg_sd, data = avg_glasgow_correlation %>% filter(model == "4")))$r.squared)
+
+for(i in c("35", "4")){
+  r_stat <- avg_glasgow_correlation %>% filter(model == i)
+  print(cor(r_stat$avg_fisher_z, r_stat$avg_sd, method = "pearson"))
+}
+```
+
+```{r}
+# After removing the variance accounted for by SD of item means:
+
+sd_of_means <- glasgow_data_filtered %>%
+  group_by(variable) %>%
+  summarize(sd = sd(value))
+
+mean_sd <- glasgow_stats %>%
+  group_by(variable) %>%
+  summarize(mean = mean(sd))
+
+residuals_df <- data.frame(variable = sd_of_means$variable, sd_of_means = sd_of_means$sd, mean_sd = mean_sd$mean)
+
+lm <- lm(mean_sd ~ sd_of_means, data = residuals_df)
+
+# residuals_df$y.fitted <- predict(lm)
+# residuals_df$resid <- residuals_df$mean_sd - residuals_df$y.fitted
+
+residuals_df$resid <- residuals(lm)
+
+residuals_plot_df <- left_join(residuals_df, avg_glasgow_correlation)
+
+ggplot(residuals_plot_df, aes(x = resid, y = avg_cor, color = model)) +
+  geom_point() +
+  geom_smooth(method = "lm", aes(fill = model), alpha = 0.1) +
+  scale_color_discrete(labels=c("ChatGPT 3.5", "ChatGPT 4")) +
+  labs(x = "Residual variability", y = "Correlation coefficient (averaged over runs)", color = "Model") +
+  theme_bw() +
+  guides(fill = "none") +
+  theme(legend.position = c(0.85, 0.85),
+        axis.title = element_text(size = 14),
+        axis.text = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14))
+```
+
+```{r}
+# r statistic, per model:
+
+# sqrt(summary(lm(avg_fisher_z ~ resid, data = residuals_plot_df %>% filter(model == "35")))$r.squared)
+# sqrt(summary(lm(avg_fisher_z ~ resid, data = residuals_plot_df %>% filter(model == "4")))$r.squared)
+
+for(i in c("35", "4")){
+  r_stat <- residuals_plot_df %>% filter(model == i)
+  print(cor(r_stat$avg_fisher_z, r_stat$resid, method = "pearson"))
+}
+```
+
+## Separate by high vs low SD
+```{r}
+# Separate data by high and low SD (controlling for mean)
+
+sds <- c("High", "Low")
+
+glasgow_sds_data <- data.frame(variable = c(), type = c(), word = c())
+
+for(v in 1:length(glasgow_variables)){
+  for(t in 1:length(sds)){
+    df <- read_csv(paste0("data/sds/", glasgow_variables[v], sds[t], ".txt"), col_names = FALSE, show_col_types = FALSE)
+    df <- df[,1]
+    colnames(df) <- c("word")
+    
+    df$sd <- sds[t]
+    df$variable <- glasgow_variables[v]
+    
+    glasgow_sds_data <- rbind(glasgow_sds_data, df)
+  }
+}
+
+glasgow_by_sd_data <- inner_join(glasgow_sds_data, glasgow_data_filtered)
+gpt_by_sd_data <- inner_join(glasgow_sds_data, gpt_data)
+
+# Correlate by SD
+
+glasgow_correlation_by_sd <- data.frame(condition = c(), model = c(), variable = c(), sd = c(), cor = c())
+
+for(c in 1:length(conditions)){
+  for(m in 1:length(models)){
+    for(v in 1:length(glasgow_variables)){
+      for(s in 1:length(sds)){
+        filtered_gpt <- gpt_by_sd_data %>%
+          filter(condition == conditions[c],
+                 model == models[m],
+                 variable == glasgow_variables[v],
+                 sd == sds[s]) %>%
+          select(word, value)
+        
+        filtered_glasgow <- glasgow_by_sd_data %>%
+          filter(variable == glasgow_variables[v],
+                 sd == sds[s]) %>%
+          select(word, value)
+        
+        filtered_gpt <- filtered_gpt[order(filtered_gpt$word),]
+        filtered_glasgow <- filtered_glasgow[order(filtered_glasgow$word),]
+
+        temp_df <- data.frame(condition = conditions[c],
+                              model = models[m],
+                              variable = glasgow_variables[v],
+                              sd = sds[s],
+                              cor = cor(filtered_gpt$value, filtered_glasgow$value,
+                                        method = "pearson"))
+
+        glasgow_correlation_by_sd <- rbind(glasgow_correlation_by_sd, temp_df)
+      }
+    }
+  }
+}
+```
+
+```{r}
+# Fisher transform correlations into Z-scores
+
+glasgow_correlation_by_sd <- glasgow_correlation_by_sd %>%
+  mutate(fisher_z = 0.5 * (log(1+cor) - log(1-cor)))
+```
+
+```{r}
+glasgow_correlation_by_sd %>%
+  filter(condition %in% c("20", "20b")) %>%
+  group_by(variable, model, sd) %>%
+  summarise(avg_cor = mean(cor)) %>% # Avg. over "20" and "20b"
+  pivot_wider(names_from = sd, values_from = avg_cor) %>%
+  mutate(diff_cor = Low - High)
+
+avg_diff_between_sds <- glasgow_correlation_by_sd %>%
+  filter(condition %in% c("20", "20b")) %>%
+  group_by(variable, model, sd) %>%
+  summarise(avg_z = mean(fisher_z)) %>% # Avg. over "20" and "20b"
+  pivot_wider(names_from = sd, values_from = avg_z) %>%
+  mutate(diff_z = Low - High) %>%
+  select(variable, model, diff_z) %>%
+  pivot_wider(names_from = model, values_from = diff_z)
+
+avg_diff_between_sds
+```
+
+# Inferential Tests
+
+## Test 1
+
+```{r}
+# Simple comparison
+
+t.test(x = avg_diff_between_sds$`35`, alternative = "greater")
+t.test(x = avg_diff_between_sds$`4`, alternative = "greater")
+```
+
+
+```{r}
+ggplot(glasgow_correlation_by_sd %>% filter(condition %in% c("20", "20b")),
+       aes(x = sd, y = fisher_z, color = model)) +
+  geom_boxplot() +
+  theme_bw()
+
+# Plot difference between high and low SDs
+
+diff_between_sds <- glasgow_correlation_by_sd %>%
+  filter(condition %in% c("20", "20b")) %>%
+  select(!cor) %>%
+  pivot_wider(names_from = sd, values_from = fisher_z) %>%
+  mutate(diff = Low - High)
+
+ggplot(diff_between_sds, aes(x = variable, y = diff, color = model)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  theme_bw()
+
+# There is across variable variability to account for
+
+ggplot(glasgow_correlation_by_sd %>% filter(condition %in% c("20", "20b")),
+       aes(x = variable, y = fisher_z)) +
+  geom_boxplot() +
+  theme_bw()
+```
+
+```{r}
+# Is there a significant difference between the high and low SD groups?
+
+test_1_df <- glasgow_correlation_by_sd %>%
+  filter(condition %in% c("20", "20b"))
+
+m1 <- lmer(fisher_z ~ sd * model + (1|variable),
+     data = test_1_df)
+
+summary(m1)
+```
+
+```{r}
+m1_emm_s <- emmeans(m1, specs = c("sd", "model"))
+
+m1_emm_s
+```
+
+
+```{r}
+test(emmeans(m1, pairwise ~ sd:model), null = 0, side = "<")
+```
+
+## Test 2
+```{r}
+# Is there a significant difference between
+## 1) the difference between the GPT ratings given for 20b and 20,
+## 2) the difference between the GPT ratings given for Rand and 20/20b, and
+## 3) the difference between the GPT ratings given for Sort and 20/20b?
+
+test_2_1_df <- gpt_data %>% 
+  pivot_wider(id_cols = c(word, variable, model), names_from = condition, values_from = value) %>%
+  mutate(control = abs(`20b` - `20`),
+         rand = abs(Rand - `20`),
+         sort = abs(Sort - `20`)) %>%
+  select(!c(`20`, `20b`, Rand, Sort)) %>%
+  pivot_longer(cols = c(control, rand, sort), names_to = "comparison", values_to = "abs_diff") %>%
+  mutate(baseline = "20")
+
+test_2_2_df <- gpt_data %>% 
+  pivot_wider(id_cols = c(word, variable, model), names_from = condition, values_from = value) %>%
+  mutate(control = abs(`20` - `20b`),
+         rand = abs(Rand - `20b`),
+         sort = abs(Sort - `20b`)) %>%
+  select(!c(`20`, `20b`, Rand, Sort)) %>%
+  pivot_longer(cols = c(control, rand, sort), names_to = "comparison", values_to = "abs_diff") %>%
+  mutate(baseline = "20b")
+
+test_2_df <- rbind(test_2_1_df, test_2_2_df)
+
+test_2_df
+```
+
+```{r}
+# Averaged over baselines
+
+avg_over_baselines <- test_2_df %>%
+  group_by(model, variable, comparison, baseline) %>%
+  summarise(avg_abs_diff = mean(abs_diff)) %>%
+  group_by(model, variable, comparison) %>%
+  summarise(grand_avg = mean(avg_abs_diff))
+
+avg_over_baselines %>% pivot_wider(names_from = model, values_from = grand_avg)
+```
+
+```{r}
+# Column means
+
+avg_over_baselines %>%
+  group_by(model, comparison) %>%
+  summarise(mean = mean(grand_avg)) %>%
+  pivot_wider(names_from = model, values_from = mean)
+```
+
+
+```{r}
+ggplot(test_2_df, aes(x = comparison, y = abs_diff, color = model)) +
+  geom_boxplot() +
+  theme_bw()
+
+# There is across variable and across word variability to account for
+
+ggplot(test_2_df, aes(x = variable, y = abs_diff)) +
+  geom_boxplot() +
+  theme_bw()
+
+ggplot(test_2_df %>% filter(word %in% sample(test_2_df$word, 10)),
+       aes(x = word, y = abs_diff)) +
+  geom_boxplot() +
+  theme_bw()
+```
+
+```{r}
+m2_1 <- lmer(abs_diff ~ comparison * model + (1|variable) + (1|word),
+     data = test_2_1_df)
+
+summary(m2_1)
+```
+
+```{r}
+emmeans(m2_1, pairwise ~ comparison)
+emmeans(m2_1, pairwise ~ comparison:model)
+```
+
+```{r}
+test_2_2_df <- gpt_data %>% 
+  pivot_wider(id_cols = c(word, variable, model), names_from = condition, values_from = value) %>%
+  mutate(`20-20b` = abs(`20` - `20b`),
+         `Rand-20b` = abs(Rand - `20b`),
+         `Sort-20b` = abs(Sort - `20b`)) %>%
+  select(!c(`20`, `20b`, Rand, Sort)) %>%
+  pivot_longer(cols = c(`20-20b`, `Rand-20b`, `Sort-20b`), names_to = "comparison", values_to = "abs_diff")
+```
+
+```{r}
+m2_2 <- lmer(abs_diff ~ comparison * model + (1|variable) + (1|word),
+     data = test_2_2_df)
+
+summary(m2_2)
+```
+
+```{r}
+emmeans(m2_2, pairwise ~ comparison:model)
+```
+
+## aoa vs aoakup
+
+```{r}
+# Is ChatGPT highly correlated with its own ratings across two different metrics: aoa/aoakup?
+
+aoa_correlation_df <- data.frame(condition = c(), model = c(), cor = c())
+
+for(c in 1:length(conditions)){
+  for(m in 1:length(models)){
+      aoa <- gpt_data %>%
+        filter(condition == conditions[c],
+               model == models[m],
+               variable == "aoa") %>%
+        select(word, value)
+      
+      aoakup <- gpt_data %>%
+        filter(condition == conditions[c],
+               model == models[m],
+               variable == "aoakup") %>%
+        select(word, value)
+      
+      aoa <- aoa[order(aoa$word),]
+      aoakup <- aoakup[order(aoakup$word),]
+
+      temp_df <- data.frame(condition = conditions[c],
+                            model = models[m],
+                            cor = cor(aoa$value, aoakup$value, method = "pearson"))
+      
+      aoa_correlation_df <- rbind(aoa_correlation_df, temp_df)
+  }
+}
+
+aoa_correlation_df %>% pivot_wider(names_from = model, values_from = cor)
+```
+
+```{r}
+# Average over 20 and 20b
+
+aoa_correlation_df %>%
+  filter(condition %in% c("20", "20b")) %>%
+  group_by(model) %>%
+  summarise(avg = mean(cor))
+```
+

@@ -1,0 +1,390 @@
+notion,1.2
+freedom,1.3
+pity,1.5
+trust,1.2
+guilt,1.5
+mood,1.6
+bliss,1.8
+mischief,2.3
+neglect,2.0
+belief,1.2
+terror,2.2
+midst,3.0
+delight,2.0
+status,2.8
+hate,1.4
+risk,2.6
+greed,1.9
+talent,2.7
+menace,3.2
+neutral,3.5
+romance,2.3
+attempt,3.4
+whimper,4.5
+employ,4.0
+fiction,3.6
+pause,4.6
+caress,5.2
+kill,5.8
+escort,5.5
+shrug,5.3
+ruffle,5.5
+arson,6.1
+venom,6.3
+hit,6.5
+date,6.7
+chord,5.9
+slave,6.0
+lumber,5.9
+product,6.7
+monarch,6.2
+battle,6.0
+county,6.8
+line,6.9
+author,6.5
+fire,7.0
+princess,6.8
+aisle,6.4
+knock,6.3
+breakfast,6.8
+city,6.9
+nectar,6.2
+blouse,6.6
+balloon,6.9
+bowel,7.0
+desert,6.3
+dessert,6.8
+basket,6.8
+garbage,7.0
+hammock,6.6
+rain,6.8
+seed,6.9
+pint,6.5
+doctor,6.8
+compass,6.9
+cotton,6.7
+bonnet,6.6
+pelvis,6.8
+pamphlet,6.4
+donkey,6.9
+wallet,7.0
+moth,6.9
+ceiling,7.0
+guitar,6.9
+trousers,6.9
+leopard,6.8
+panther,6.9
+apple,7.0
+giraffe,7.0
+virtue, 1.2
+pleasure, 1.7
+heaven, 2.0
+courage, 1.3
+fuss, 4.1
+doubt, 1.4
+phantom, 3.4
+excuse, 1.6
+malice, 1.3
+limit, 2.3
+marvel, 2.1
+power, 1.8
+method, 2.5
+duty, 1.4
+despair, 1.4
+culture, 1.7
+outrage, 2.2
+success, 2.0
+recall, 2.6
+affair, 2.9
+impress, 2.5
+pride, 1.9
+forge, 5.7
+doctrine, 2.0
+monster, 5.5
+vowel, 6.6
+class, 4.0
+cure, 3.7
+smell, 5.8
+art, 2.9
+usher, 4.2
+contract, 5.0
+bondage, 3.5
+camp, 6.5
+strand, 5.0
+harvest, 6.0
+stock, 5.8
+bulge, 5.9
+stab, 5.6
+mistress, 6.7
+device, 6.3
+spring, 6.2
+script, 5.7
+cancer, 6.8
+lunch, 7.0
+costume, 6.9
+rattle, 6.2
+parade, 6.5
+beggar, 6.8
+picture, 6.5
+husband, 7.0
+mother, 7.0
+spit, 6.5
+glacier, 6.9
+dinner, 7.0
+ulcer, 6.6
+cushion, 7.0
+people, 6.9
+couch, 7.0
+palace, 6.7
+food, 7.0
+lace, 6.8
+soldier, 6.9
+stove, 7.0
+goose, 7.0
+throat, 7.0
+sweater, 7.0
+castle, 6.9
+mirror, 7.0
+baby, 7.0
+mansion, 6.8
+wood, 7.0
+hand, 7.0
+tiger, 7.0
+necklace, 7.0
+cottage, 7.0
+trumpet, 7.0
+coffin, 7.0
+concept, 1.3
+luck, 1.5
+moment, 4.1
+gist, 1.6
+dread, 2.1
+crude, 4.2
+gloom, 3.8
+reason, 1.8
+closure, 3.5
+glee, 2.7
+version, 3.6
+urge, 2.9
+wrath, 2.8
+flourish, 3.4
+disgust, 3.1
+spirit, 3.0
+trouble, 4.0
+respect, 2.5
+ordeal, 4.3
+console, 4.7
+leisure, 4.4
+settle, 4.6
+whore, 6.2
+function, 3.7
+service, 4.5
+health, 5.0
+incest, 6.0
+project, 4.8
+bitch, 6.1
+victim, 5.3
+bounce, 5.5
+tumble, 5.4
+chew, 6.3
+smear, 5.7
+hurdle, 5.6
+circuit, 5.8
+moisture, 6.4
+suburb, 6.5
+message, 5.2
+game, 5.9
+report, 5.1
+asthma, 6.6
+shaft, 6.7
+artist, 6.8
+applause, 6.9
+mural, 7.0
+punch, 6.4
+honey, 6.5
+cough, 6.6
+vulture, 6.7
+bandage, 6.8
+saloon, 6.9
+scalpel, 7.0
+blood, 6.9
+crystal, 7.0
+child, 6.9
+prison, 7.0
+cricket, 6.5
+chauffeur, 6.6
+jewel, 6.7
+island, 6.8
+chest, 6.9
+person, 7.0
+table, 7.0
+reptile, 6.7
+apron, 6.8
+breast, 6.9
+cloak, 6.6
+monkey, 6.7
+curtain, 6.8
+candle, 6.9
+beer, 7.0
+spinach, 6.8
+snail, 6.9
+forehead, 7.0
+shark, 6.7
+pumpkin, 6.8
+toilet, 6.9
+wisdom,1.0
+doom,1.1
+faith,1.0
+knowledge,1.2
+essence,1.0
+fault,1.9
+sin,1.5
+fame,2.0
+sorrow,1.4
+shame,1.3
+ease,2.4
+context,1.7
+justice,1.5
+contempt,1.3
+phase,2.5
+treason,1.6
+passion,1.4
+nurture,2.1
+launch,4.1
+triumph,2.5
+gain,3.1
+ban,3.5
+feat,2.8
+crisis,2.9
+whisper,3.4
+fraud,2.7
+stretch,4.8
+transit,5.1
+stride,5.0
+resort,5.7
+squeeze,4.8
+pest,6.1
+sleep,4.9
+dance,5.4
+slum,5.6
+piece,6.2
+toxin,5.9
+junk,6.0
+plasma,4.8
+mate,4.9
+model,5.0
+methane,5.8
+cuddle,6.0
+wrestle,5.7
+item,6.2
+carcass,6.9
+handle,6.6
+traffic,6.7
+column,6.5
+hostess,6.4
+packet,6.9
+toast,6.7
+head,6.3
+prince,6.2
+sister,6.9
+carpet,6.7
+police,6.6
+metal,6.8
+office,6.5
+bead,7.0
+carriage,6.9
+leaf,7.0
+tulip,7.0
+mug,7.0
+surgeon,6.8
+pillow,7.0
+jungle,7.0
+cattle,7.0
+walrus,7.0
+luggage,7.0
+sword,7.0
+ant,7.0
+parrot,7.0
+canoe,7.0
+needle,7.0
+jacket,7.0
+tortoise,7.0
+shirt,7.0
+myth, 2.0
+figment, 1.5
+taboo, 2.5
+wish, 1.5
+hope, 1.5
+blame, 3.0
+aspect, 2.8
+caution, 3.6
+wit, 3.9
+lust, 2.3
+reject, 3.4
+trend, 3.7
+nuisance, 4.9
+progress, 2.0
+farewell, 5.0
+prestige, 2.4
+boast, 3.5
+issue, 3.6
+complex, 4.2
+consent, 3.7
+dare, 4.8
+role, 4.7
+anger, 2.4
+cease, 5.1
+plea, 5.7
+sparkle, 6.1
+verge, 5.8
+morsel, 6.5
+grind, 6.4
+troll, 4.3
+pension, 5.7
+sentence, 5.9
+snort, 6.5
+texture, 6.6
+passage, 5.5
+signal, 6.8
+puzzle, 6.9
+fleet, 6.4
+merchant, 6.5
+treasure, 6.1
+picket, 6.9
+hostage, 7.0
+squash, 6.8
+yeast, 7.0
+bracket, 6.9
+clergy, 6.5
+clover, 6.7
+slope, 6.5
+town, 6.8
+string, 7.0
+hall, 7.0
+crab, 7.0
+portrait, 7.0
+rubble, 7.0
+candy, 7.0
+blister, 7.0
+fortress, 7.0
+walnut, 7.0
+typhoon, 7.0
+pupil, 7.0
+mammal, 6.9
+stomach, 7.0
+dandruff, 7.0
+button, 7.0
+flea, 7.0
+python, 7.0
+anchor, 7.0
+waitress, 7.0
+bowl, 7.0
+ladder, 7.0
+pheasant, 7.0
+comb, 7.0
+ham, 7.0
+sandwich, 7.0
+melon, 7.0
+lettuce, 7.0
+lobster, 7.0
+zebra, 7.0

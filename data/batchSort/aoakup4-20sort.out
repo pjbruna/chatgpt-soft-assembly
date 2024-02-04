@@ -1,0 +1,390 @@
+ban,10
+bliss,11
+neutral,13
+dandruff,14
+trend,13
+flourish,11
+transit,10
+treason,12
+virtue,11
+doctrine,16
+lust,15
+contempt,14
+bondage,14
+food,2
+shirt,3
+couch,4
+dinner,2
+ham,3
+smell,2
+lettuce,3
+table,2
+monster,4
+toast,4
+button,3
+garbage,4
+string,3
+wrestle,8
+walrus,8
+mug,3
+jungle,5
+candle,4
+shark,5
+hate,4
+dessert,4
+troll,10
+snail,4
+date,10
+sparkle,6
+reptile,7
+bounce,5
+jewel,6
+excuse,7
+moisture,11
+shame,11
+breast,2
+role,10
+sin,9
+leopard,7
+cloak,9
+author,12
+duty,10
+belief,10
+island,4
+column,9
+faith,10
+knowledge,10
+coffin,8
+python,9
+service,9
+bulge,8
+whimper,6
+grind,13
+courage,11
+respect,8
+slope,11
+morsel,8
+county,10
+saloon,11
+function,12
+stock,11
+romance,13
+phase,13
+pamphlet,12
+despair,15
+figment,14
+typhoon,12
+neglect,12
+pelvis,14
+ordeal,13
+clergy,16
+impress,12
+scalpel,18
+escort,15
+affair,16
+method,10
+gist,15
+recall,11
+circuit,14
+whore,18
+malice,14
+pension,16
+fire,3
+people,2
+sister,2
+princess,4
+picture,3
+monkey,3
+whisper,6
+balloon,2
+wood,6
+dance,4
+hit,2
+line,5
+hope,6
+giraffe,4
+spit,3
+child,2
+prince,4
+hall,6
+stretch,6
+cushion,3
+metal,6
+anchor,8
+camp,7
+carriage,7
+aisle,13
+carpet,3
+cuddle,3
+caution,7
+message,7
+blame,8
+luck,7
+report,9
+blouse,5
+blister,5
+bonnet,5
+soldier,6
+freedom,10
+tulip,5
+fame,9
+harvest,9
+prison,10
+portrait,10
+disgust,11
+flea,6
+tumble,4
+venom,10
+device,11
+boast,9
+pint,16
+plea,12
+cottage,6
+myth,10
+hurdle,10
+vulture,9
+gloom,12
+mischief,9
+stride,10
+glee,7
+victim,10
+justice,9
+reject,9
+wisdom,12
+mural,11
+chauffeur,12
+consent,12
+fortress, 7
+monarch, 8
+wrath, 14
+console, 10
+passion, 16
+nurture, 9
+crude, 16
+feat, 10
+concept, 9
+mistress, 18
+closure, 16
+taboo, 13
+methane, 16
+sleep, 2
+breakfast, 3
+lunch, 2
+jacket, 3
+chew, 1
+melon, 4
+game, 3
+cough, 3
+trouble, 7
+knock, 3
+ceiling, 5
+zebra, 4
+blood, 6
+class, 4
+police, 4
+puzzle, 5
+stomach, 2
+guitar, 4
+sword, 5
+spring, 2
+parrot, 4
+item, 7
+punch, 6
+sentence, 5
+bandage, 5
+anger, 5
+walnut, 6
+traffic, 5
+limit, 8
+lace, 6
+parade, 5
+mood, 9
+dare, 6
+office, 5
+artist, 6
+squash, 6
+guilt, 10
+spirit, 8
+fiction, 8
+mammal, 8
+power, 6
+risk, 9
+greed, 12
+crystal, 6
+trousers, 3
+moment, 5
+pupil, 6
+pleasure, 10
+phantom, 8
+sorrow, 10
+hostess, 9
+issue, 10
+pity, 8
+smear, 10
+pride, 9
+crisis, 12
+contract, 12
+resort, 12
+texture, 9
+menace, 9
+yeast, 8
+rubble, 8
+bowel, 6
+forge, 8
+outrage, 11
+marvel,8
+bitch,15
+shaft,12
+asthma,7
+picket,10
+caress,7
+notion,8
+complex,10
+verge,9
+status,10
+essence,12
+incest,14
+plasma,12
+hand,3
+pillow,3
+rain,3
+baby,2
+tiger,5
+costume,4
+bowl,3
+stove,4
+rattle,2
+doctor,3
+seed,5
+sandwich,4
+mirror,3
+curtain,4
+chest,5
+town,4
+sweater,4
+needle,6
+honey,4
+fuss,5
+forehead,4
+basket,4
+clover,5
+model,6
+wallet,6
+donkey,5
+beer,10
+art,6
+handle,4
+stab,12
+cattle,5
+city,5
+canoe,6
+panther,7
+apron,4
+fault,6
+talent,7
+gain,7
+waitress,9
+pest,7
+lobster,7
+ruffle,9
+luggage,6
+cricket,6
+slave,9
+shrug,10
+glacier,9
+passage,7
+desert,9
+cancer,11
+compass,7
+surgeon,7
+delight,7
+terror,11
+nectar,9
+progress,9
+urge,9
+cease,10
+usher,10
+dread,9
+culture,10
+nuisance,11
+chord,10
+merchant,10
+hostage,11
+context,12
+fraud,13
+triumph,10
+aspect,13
+fleet,9
+midst,12
+wit,9
+arson,10
+employ,10
+prestige,12
+slum,9
+carcass,11
+ulcer,13
+mother,2
+head,2
+toilet,3
+wish,4
+candy,2
+apple,2
+heaven,4
+ant,3
+ladder,4
+leaf,2
+person,3
+pumpkin,3
+piece,2
+spinach,3
+necklace,3
+throat,2
+goose,3
+crab,2
+squeeze,3
+comb,2
+husband,8
+bead,4
+moth,6
+castle,4
+tortoise,4
+cotton,3
+treasure,4
+applause,4
+trumpet,4
+kill,5
+vowel,6
+trust,5
+junk,5
+signal,5
+pause,6
+palace,4
+battle,5
+hammock,7
+mansion,8
+lumber,7
+snort,8
+health,5
+beggar,7
+attempt,9
+reason,6
+launch,7
+product,9
+version,11
+settle,8
+strand,9
+farewell,8
+bracket,10
+mate,11
+doubt,8
+packet,9
+project,9
+ease,8
+success,10
+toxin,12
+doom,10
+suburb,10
+cure,7
+pheasant,8
+script,9
+leisure,10

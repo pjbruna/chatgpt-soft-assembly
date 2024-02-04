@@ -1,0 +1,390 @@
+mammal, 3
+lettuce, 2
+figment, 2
+taboo, 3
+arson, 2
+clover, 3
+luggage, 3
+tulip, 2
+walrus, 2
+jungle, 3
+bliss, 3
+context, 3
+role, 4
+string, 5
+spirit, 6
+yeast, 3
+bitch, 3
+melon, 3
+cloak, 3
+baby, 5
+bandage, 3
+carpet, 3
+panther, 2
+ordeal, 3
+dinner, 3
+signal, 4
+malice, 2
+suburb, 2
+mischief, 3
+food, 3
+farewell, 2
+fuss, 3
+crisis, 2
+verge, 3
+clergy, 2
+canoe, 2
+snort, 3
+blister, 3
+fleet, 3
+fraud, 3
+harvest, 3
+treasure, 3
+stab, 3
+product, 4
+sparkle, 3
+courage, 2
+boast, 3
+bowel, 2
+monarch, 3
+carcass, 2
+castle, 2
+soldier, 3
+mate, 4
+basket, 3
+gloom, 2
+shame, 3
+forge, 4
+trouble, 4
+success, 3
+fiction, 3
+sentence, 4
+chest, 3
+police, 2
+camp, 3
+closure, 3
+affair, 3
+function, 4
+carriage, 3
+contract, 4
+dread, 3
+stretch, 3
+crude, 3
+bonnet, 3
+game, 4
+pride, 3
+trust, 3
+office, 3
+report, 4
+caress, 4
+incest, 1
+cattle, 2
+pint, 5
+aisle, 2
+walnut, 2
+cuddle, 3
+sorrow, 3
+ant, 3
+disgust, 2
+flea, 3
+greed, 1
+status, 2
+settle, 7
+hand, 15
+pelvis, 1
+pillow, 2
+pheasant, 1
+dance, 6
+sleep, 6
+whore, 2
+treason, 2
+hostess, 3
+breakfast, 1
+morsel, 2
+tortoise, 1
+packet, 2
+gist, 1
+usher, 3
+health, 2
+prestige, 1
+city, 2
+knock, 5
+wrestle, 3
+line, 15
+princess, 2
+candy, 2
+forehead, 1
+traffic, 3
+culture, 3
+honey, 3
+spit, 5
+junk, 4
+pity, 2
+item, 2
+puzzle, 3
+picture, 6
+caution, 2
+script, 4
+prince, 3
+rubble, 2
+bowl, 4
+slave, 3
+wit, 3
+contempt, 1
+belief, 2
+launch, 6
+date, 7
+doubt, 3
+chord, 5
+needle, 4
+husband, 2
+crystal, 3
+doom, 2
+goose, 4
+hit, 10
+moment, 2
+picket, 2
+anchor, 4
+model, 6
+device, 3
+knowledge, 1
+comb, 3
+faith, 3
+freedom, 2
+couch, 3
+handle, 5
+fire, 10.
+glacier,2
+methane,1
+toxin,2
+whimper,2
+asthma,1
+shirt,2
+vulture,2
+leopard,2
+applause,2
+county,3
+pumpkin,2
+strand,3
+trend,3
+spring,4
+power,5
+nectar,2
+saloon,2
+mural,2
+mug,3
+portrait,3
+shark,2
+cough,2
+slope,3
+anger,3
+ceiling,2
+chew,2
+pamphlet,1
+myth,2
+stride,3
+smear,3
+outrage,3
+marvel,3
+mood,3
+message,3
+progress,4
+hurdle,2
+squash,3
+palace,2
+costume,2
+mother,3
+author,3
+terror,2
+toilet,2
+bounce,3
+cushion,3
+glee,2
+tumble,3
+cease,2
+artist,2
+sin,3
+whisper,3
+apple,2
+heaven,3
+tiger,2
+monkey,3
+jewel,2
+phase,2
+neutral,3
+ease,3
+troll,3
+sword,2
+lust,2
+consent,3
+transit,2
+cure,3
+excuse,3
+triumph,2
+reason,4
+breast,3
+pause,2
+bracket,3
+essence,2
+limit,3
+shaft,3
+duty,2
+ruffle,3
+person,3
+metal,2
+guitar,3
+dandruff,1
+blouse,2
+zebra,2
+trousers,2
+typhoon,2
+giraffe,2
+hostage,3
+bead,3
+lunch,2
+sandwich,3
+phantom,4
+concept,4
+blood,5
+service,6
+ulcer,2
+sweater,2
+stove,2
+slum,2
+necklace,2
+doctrine,3
+apron,2
+ham,3
+candle,3
+rain,4
+escort,3
+parrot,2
+talent,3
+fame,2
+leisure,2
+balloon,3
+risk,3
+menace,3
+midst,2
+complex,4
+cricket,3
+cancer,2
+wallet,2
+toast,4
+merchant,2
+sister,3
+punch,4
+bulge,2
+project,4
+lumber,3
+squeeze,3
+method,2
+wish,3
+pension,2
+moth,2
+beggar,2
+trumpet,3
+mansion,2
+victim,2
+wood,3
+notion,3
+plea,3
+reject,2
+neglect,2
+attempt,3
+doctor,3
+texture,3
+snail,2
+button,3
+class,4
+version,3
+grind,3
+respect,3
+throat,2
+passion,3
+parade,3
+fault,4
+aspect,3
+circuit,3
+column,3
+gain,4
+virtue,2
+art,4
+vowel, 3
+spinach, 1
+dessert, 2
+lobster, 3
+shrug, 2
+scalpel, 1
+waitress, 1
+fortress, 2
+cottage, 2
+console, 3
+garbage, 2
+nuisance, 2
+luck, 3
+issue, 4
+passage, 4
+head, 7
+pest, 2
+moisture, 1
+prison, 2
+beer, 2
+hammock, 1
+python, 3
+surgeon, 1
+chauffeur, 1
+venom, 2
+guilt, 2
+dare, 3
+donkey, 2
+despair, 2
+ladder, 3
+wrath, 1
+nurture, 3
+wisdom, 1
+feat, 2
+employ, 3
+reptile, 1
+pupil, 3
+bondage, 2
+leaf, 3
+island, 2
+hate, 2
+monster, 2
+desert, 3
+mirror, 2
+resort, 3
+delight, 2
+recall, 3
+hope, 4
+plasma, 2
+lace, 3
+jacket, 2
+cotton, 2
+smell, 3
+curtain, 2
+kill, 3
+pleasure, 2
+battle, 3
+blame, 2
+piece, 4
+people, 2
+coffin, 2
+crab, 3
+romance, 3
+stomach, 3
+justice, 1
+stock, 5
+town, 2
+impress, 2
+seed, 3
+child, 2
+ban, 2
+hall, 2
+urge, 3
+mistress, 3
+rattle, 3
+flourish, 3
+table, 3
+compass, 3

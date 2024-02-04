@@ -1,0 +1,390 @@
+giraffe,1.0
+snail,1.0
+needle,1.0
+reptile,1.0
+pillow,1.5
+melon,1.0
+dandruff,1.0
+lace,1.5
+bowl,1.5
+crystal,1.0
+ant,1.0
+sweater,1.5
+apple,1.0
+shaft,1.0
+junk,1.0
+trousers,1.5
+pheasant,1.0
+chest,1.0
+throat,1.0
+head,1.5
+garbage,1.0
+morsel,1.3
+fortress,1.0
+cushion,1.0
+luggage,1.0
+sparkle,1.0
+cattle,1.0
+couch,2.0
+string,1.5
+device,3.0
+blood,2.0
+grind,2.5
+canoe,2.5
+passage,2.2
+risk,4.5
+moment,5.0
+picket,3.0
+ruffle,1.5
+essence,3.0
+pension,4.0
+carriage,2.5
+luck,4.5
+issue,5.0
+trouble,5.0
+fiction,4.5
+marvel,3.5
+palace,2.5
+beer,5.5
+delight,6.0
+costume,2.5
+harvest,2.5
+mammal,1.5
+pleasure,6.0
+wisdom,6.0
+doctrine,3.5
+mansion,2.5
+model,4.0
+cricket,3.0
+shame,6.5
+faith,7.0
+role,7.0
+treason,6.0
+wrestle,6.0
+hostage,6.5
+boast,6.0
+date,6.5
+child,7.0
+impress,6.5
+baby,7.0
+saloon,5.0
+town,6.5
+doctor,6.0
+victim,5.5
+prison,5.0
+police,6.0
+mate,7.0
+culture,7.0
+people,7.0
+blister, 1.0
+moth, 1.0
+ceiling, 1.0
+curtain, 1.0
+leopard, 1.0
+candle, 1.5
+texture, 1.0
+jacket, 2.0
+zebra, 1.0
+leaf, 1.0
+column, 1.5
+line, 2.0
+stove, 1.5
+ulcer, 1.0
+carcass, 1.0
+glacier, 1.0
+clover, 1.0
+bracket, 1.0
+squeeze, 2.0
+bounce, 2.0
+hammock, 2.0
+nectar, 1.0
+basket, 2.5
+figment, 1.0
+table, 3.0
+mural, 4.0
+limit, 2.5
+midst, 3.0
+aspect, 4.0
+circuit, 1.5
+ease, 2.5
+jewel, 1.5
+compass, 2.0
+cottage, 3.0
+gist, 3.5
+feat, 3.5
+settle, 5.0
+malice, 6.0
+wrath, 6.0
+fire, 2.0
+concept, 4.0
+context, 4.5
+plea, 5.5
+coffin, 2.5
+arson, 6.5
+hall, 4.0
+whimper, 5.0
+troll, 3.5
+despair, 5.0
+myth, 3.0
+fleet, 3.5
+dare, 5.0
+art, 4.0
+talent, 4.0
+clergy, 6.0
+transit, 3.0
+report, 5.5
+bondage, 4.5
+console, 5.0
+surgeon, 5.0
+mood, 5.0
+power, 4.5
+wit, 4.0
+crisis, 5.5
+monarch, 5.0
+caress, 6.0
+soldier, 5.5
+prestige, 5.0
+anger, 6.0
+hate, 6.5
+service, 6.5
+traffic, 4.0
+message, 6.0
+battle, 6.5
+parade, 5.5
+artist, 5.0
+husband, 6.0
+romance, 7.0
+button,1.0
+tiger,1.0
+pelvis,1.0
+bowel,1.0
+carpet,1.0
+yeast,1.0
+seed,1.0
+ham,1.0
+walrus,1.0
+packet,1.0
+tortoise,1.0
+goose,1.0
+plasma,1.0
+strand,1.0
+version,1.0
+item,1.0
+panther,1.0
+stretch,1.0
+scalpel,1.0
+vulture,1.0
+verge,1.0
+method,2.0
+mirror,2.0
+phantom,1.0
+rain,1.0
+chew,1.0
+product,3.0
+crude,1.0
+sword,2.0
+smell,1.0
+typhoon,1.0
+pause,2.0
+neutral,2.0
+guitar,2.0
+squash,1.0
+cough,1.0
+complex,2.0
+closure,3.0
+sentence,5.0
+pamphlet,4.0
+doom,1.0
+breakfast,3.0
+fuss,4.0
+reason,6.0
+breast,1.0
+function,2.0
+recall,4.0
+food,1.0
+fault,5.0
+reject,5.0
+signal,4.0
+caution,4.0
+doubt,5.0
+lunch,3.0
+whisper,4.0
+contract,7.0
+pupil,3.0
+heaven,1.0
+slave,6.0
+greed,5.0
+dinner,3.0
+game,4.0
+usher,3.0
+lust,5.0
+kill,6.0
+passion,4.0
+duty,6.0
+guilt,6.0
+status,7.0
+pity,5.0
+prince,6.0
+fame,7.0
+consent,7.0
+class,7.0
+person,7.0
+farewell,6.0
+respect,7.0
+mother,7.0
+spinach,1.2
+moisture,1.1
+python,1.5
+walnut,1.3
+apron,2.5
+lettuce,1.2
+crab,1.5
+ladder,2.4
+wood,1.3
+slope,1.4
+bead,1.8
+pumpkin,1.6
+sandwich,4.0
+desert,1.4
+jungle,2.0
+methane,1.1
+shirt,4.5
+balloon,3.2
+cloak,2.3
+flea,1.8
+stock,4.0
+rattle,2.5
+monkey,3.0
+trumpet,3.7
+island,2.3
+bandage,4.5
+forge,2.6
+phase,3.7
+dessert,3.5
+chord,2.9
+honey,2.2
+gloom,3.3
+stride,2.4
+candy,3.3
+handle,2.8
+gain,4.0
+castle,3.2
+asthma,2.5
+wallet,4.0
+shrug,5.4
+monster,3.2
+picture,4.5
+portrait,5.5
+contempt,6.0
+spirit,4.4
+notion,4.1
+bliss,2.5
+author,5.6
+wish,5.5
+cure,5.0
+bitch,5.5
+sorrow,5.0
+mischief,6.0
+resort,4.2
+chauffeur,5.7
+terror,5.4
+knowledge,5.9
+whore,6.1
+hope,5.9
+slum,6.0
+outrage,6.0
+punch,6.4
+suburb,5.0
+beggar,6.0
+leisure,4.5
+employ,6.2
+nurture,6.8
+pride,6.0
+merchant,5.5
+courage,5.0
+applause,6.8
+princess,6.0
+taboo,6.1
+hostess,5.8
+trend,5.5
+justice,6.8
+trust,7.0
+sister,7.0
+shark,1.0
+metal,1.0
+toxin,1.0
+cotton,1.5
+bonnet,1.5
+forehead,1.0
+lobster,1.0
+necklace,2.5
+lumber,1.0
+tulip,1.0
+anchor,1.5
+comb,1.0
+vowel,1.0
+toilet,2.0
+blouse,1.5
+tumble,1.5
+mug,1.5
+donkey,1.0
+parrot,1.0
+bulge,1.0
+snort,1.0
+cease,2.5
+piece,1.5
+toast,2.0
+stomach,1.0
+smear,2.5
+venom,1.0
+puzzle,2.5
+rubble,1.0
+pest,2.5
+treasure,2.0
+spring,1.5
+aisle,2.5
+launch,4.0
+sleep,1.0
+knock,3.0
+attempt,5.0
+hurdle,4.5
+hand,3.0
+pint,2.5
+cancer,2.5
+script,4.0
+spit,2.5
+dread,2.5
+ordeal,4.5
+project,5.0
+fraud,5.5
+ban,5.0
+nuisance,4.5
+office,5.5
+hit,3.5
+urge,4.0
+flourish,4.0
+excuse,5.0
+disgust,5.0
+virtue,6.0
+health,3.5
+glee,3.5
+county,5.0
+camp,4.5
+sin,5.5
+menace,5.5
+stab,5.5
+belief,6.0
+success,5.5
+escort,5.5
+progress,5.5
+neglect,5.5
+triumph,5.0
+affair,6.0
+dance,6.0
+blame,6.0
+incest,6.5
+waitress,6.0
+mistress,6.0
+city,5.5
+freedom,4.5
+cuddle,6.0
