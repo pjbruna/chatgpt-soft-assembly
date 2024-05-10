@@ -1,6 +1,7 @@
 # chatgpt-soft-assembly
 
 All files associated with the project "Emergent Mental Lexicon Functions in ChatGPT" are archived in this repository.
+
 Preprint: [10.31234/osf.io/gka2j](https://osf.io/preprints/psyarxiv/gka2j)
 
 ## Data files:
