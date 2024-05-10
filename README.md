@@ -18,4 +18,4 @@ Preprint: [10.31234/osf.io/gka2j](https://osf.io/preprints/psyarxiv/gka2j)
 - correlation_analysis.Rmd: all analyses reported in the manuscript.
 
 ## APA-style Citation (7th ed.):
-Kello, C. & Bruna, P. J. (2024). *Emergent Soft-Assembly of Mental Lexicon Functions in ChatGPT* [Unpublished manuscript]. Department of Cognitive and Information Sciences, University of California, Merced.
+Kello, C., & Bruna, P. J. (2024, May 10). Emergent Mental Lexicon Functions in ChatGPT. Retrieved from osf.io/preprints/psyarxiv/gka2j
