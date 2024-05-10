@@ -1,6 +1,7 @@
 # chatgpt-soft-assembly
 
-All files associated with the project "Emergent Soft-Assembly of Mental Lexicon Functions in ChatGPT" (Kello & Bruna, 2024) are archived in this repository.
+All files associated with the project "Emergent Mental Lexicon Functions in ChatGPT" are archived in this repository.
+Preprint: [10.31234/osf.io/gka2j](https://osf.io/preprints/psyarxiv/gka2j)
 
 ## Data files:
 - batch20: GPT responses on the original run ("Experiment 1: Run 1") for all words, rated for each SCOPE variable.
