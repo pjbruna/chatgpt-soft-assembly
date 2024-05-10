@@ -17,5 +17,5 @@ Preprint: [10.31234/osf.io/gka2j](https://osf.io/preprints/psyarxiv/gka2j)
 - compile_data.R: compiles GPT responses into a single .csv file.
 - correlation_analysis.Rmd: all analyses reported in the manuscript.
 
-## APA-style Citation (7th ed.):
+## APA-style Citation:
 Kello, C., & Bruna, P. J. (2024, May 10). Emergent Mental Lexicon Functions in ChatGPT. Retrieved from osf.io/preprints/psyarxiv/gka2j
