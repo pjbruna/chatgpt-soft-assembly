@@ -1,0 +1,190 @@
+---
+title: "Exp 2 Figures"
+author: "Polyphony J. Bruna"
+date: "2025-03-24"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(ggpubr)
+```
+
+# Means
+
+```{r}
+m_data <- read.csv('data/manuscript/exp1_mean_data.csv') %>%
+  pivot_longer(cols = !c(source, word), names_to = "variable", values_to = "value")
+```
+
+```{r}
+scope_data <- m_data %>%
+  filter(source == "scope") %>%
+  rename("scope" = value) %>%
+  select(!source)
+
+model_data <- m_data %>%
+  filter(source != "scope") %>%
+  mutate(model = source) %>%
+  mutate(model = factor(model)) %>%
+  select(!source)
+
+m_df <- left_join(model_data, scope_data) %>%
+  mutate(model = factor(model, levels = c("gpt35", "gpt4", "gpt4o", "gem15")))
+```
+
+```{r}
+facet_labels <- c(
+  "aoa" = "AoA Rating",
+  "arousal" = "Arousal",
+  "conc" = "Concreteness",
+  "dom" = "Dominance",
+  "fam" = "Familiarity",
+  "gender" = "Gender Association",
+  "humor" = "Humorousness",
+  "image" = "Imageability",
+  "size" = "Semantic Size",
+  "social" = "Socialness",
+  "valence" = "Valence"
+)
+
+ggplot(m_df, aes(x=value, y=scope, color=model, fill=model)) +
+  facet_wrap(~variable, labeller = labeller(variable = facet_labels), scales = "free") +
+  ggh4x::facetted_pos_scales(
+    x = list(
+    variable == "aoa" ~ scale_x_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "conc" ~ scale_x_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "fam" ~ scale_x_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "gender" ~ scale_x_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "image" ~ scale_x_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "size" ~ scale_x_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "arousal" ~ scale_x_continuous(limits = c(1,9), n.breaks = 9),
+    variable == "dom" ~ scale_x_continuous(limits = c(1,9), n.breaks = 9),
+    variable == "valence" ~ scale_x_continuous(limits = c(1,9), n.breaks = 9),
+    variable == "humor" ~ scale_x_continuous(limits = c(1,5), n.breaks = 5),
+    variable == "social" ~ scale_x_continuous(limits = c(1,7), n.breaks = 7)
+  ), y = list(
+    variable == "aoa" ~ scale_y_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "conc" ~ scale_y_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "fam" ~ scale_y_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "gender" ~ scale_y_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "image" ~ scale_y_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "size" ~ scale_y_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "arousal" ~ scale_y_continuous(limits = c(1,9), n.breaks = 9),
+    variable == "dom" ~ scale_y_continuous(limits = c(1,9), n.breaks = 9),
+    variable == "valence" ~ scale_y_continuous(limits = c(1,9), n.breaks = 9),
+    variable == "humor" ~ scale_y_continuous(limits = c(1,5), n.breaks = 5),
+    variable == "social" ~ scale_y_continuous(limits = c(1,7), n.breaks = 7)
+  )) +
+  geom_point(alpha=0.15, size=1, shape=1) +
+  geom_smooth(method="lm", size=0.5) +
+  stat_cor(aes(label = ..r.label..), method = "pearson", digits = 2, show.legend = F, size = 2) +
+  labs(x = "Model", y = "Human", color ="Model", fill = "Model") +
+  scale_color_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  scale_fill_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  theme_bw() + 
+  theme(legend.position = c(0.89,0.15),
+        legend.key.size = unit(0.5, "cm"),
+        strip.text.x = element_text(margin = margin(t = 2, b = 2)),
+        strip.text = element_text(size = 8),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        # panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+# ggsave("figures/exp1_means.png")
+```
+
+# SDs
+
+```{r}
+sd_data <- read.csv('data/manuscript/exp1_sd_data.csv') %>%
+  pivot_longer(cols = !c(source, word), names_to = "variable", values_to = "value")
+```
+
+```{r}
+scope_data <- sd_data %>%
+  filter(source == "scope") %>%
+  rename("scope" = value) %>%
+  select(!source)
+
+model_data <- sd_data %>%
+  filter(source != "scope") %>%
+  mutate(model = source) %>%
+  mutate(model = factor(model)) %>%
+  select(!source)
+
+sd_df <- left_join(model_data, scope_data) %>%
+  mutate(model = factor(model, levels = c("gpt35", "gpt4", "gpt4o", "gem15")))
+```
+
+```{r}
+# facet_labels <- c(
+#   "aoa" = "AoA Rating",
+#   "arousal" = "Arousal",
+#   "conc" = "Concreteness",
+#   "dom" = "Dominance",
+#   "fam" = "Familiarity",
+#   "gender" = "Gender Association",
+#   "humor" = "Humorousness",
+#   "image" = "Imageability",
+#   "size" = "Semantic Size",
+#   "social" = "Socialness",
+#   "valence" = "Valence"
+# )
+
+sd_limits_max <- sd_df %>%
+  group_by(variable) %>%
+  summarize(max = max(scope))
+
+ggplot(sd_df, aes(x=value, y=scope, color=model, fill=model)) +
+  facet_wrap(~variable, labeller = labeller(variable = facet_labels), scale = "free") +
+  ggh4x::facetted_pos_scales(
+   x = list(
+   variable == "aoa" ~ scale_x_continuous(limits = c(0,1.708)),
+   variable == "conc" ~ scale_x_continuous(limits = c(0,2.267)),
+   variable == "fam" ~ scale_x_continuous(limits = c(0,2.147)),
+   variable == "gender" ~ scale_x_continuous(limits = c(0,1.888)),
+   variable == "image" ~ scale_x_continuous(limits = c(0,2.198)),
+   variable == "size" ~ scale_x_continuous(limits = c(0,2.059)),
+   variable == "arousal" ~ scale_x_continuous(limits = c(0,3.157)),
+   variable == "dom" ~ scale_x_continuous(limits = c(0,3.181)),
+   variable == "valence" ~ scale_x_continuous(limits = c(0,2.461)),
+   variable == "humor" ~ scale_x_continuous(limits = c(0,1.609114)),
+   variable == "social" ~ scale_x_continuous(limits = c(0,2.492847))
+  ), y = list(
+   variable == "aoa" ~ scale_y_continuous(limits = c(0,1.708)),
+   variable == "conc" ~ scale_y_continuous(limits = c(0,2.267)),
+   variable == "fam" ~ scale_y_continuous(limits = c(0,2.147)),
+   variable == "gender" ~ scale_y_continuous(limits = c(0,1.888)),
+   variable == "image" ~ scale_y_continuous(limits = c(0,2.198)),
+   variable == "size" ~ scale_y_continuous(limits = c(0,2.059)),
+   variable == "arousal" ~ scale_y_continuous(limits = c(0,3.157)),
+   variable == "dom" ~ scale_y_continuous(limits = c(0,3.181)),
+   variable == "valence" ~ scale_y_continuous(limits = c(0,2.461)),
+   variable == "humor" ~ scale_y_continuous(limits = c(0,1.609114)),
+   variable == "social" ~ scale_y_continuous(limits = c(0,2.492847))
+  )) +
+  geom_point(alpha=0.15, size=1, shape=1) +
+  geom_smooth(method="lm", size=0.5) +
+  stat_cor(aes(label = ..r.label..), method = "pearson", digits = 3, show.legend = F, size = 2, label.x.npc = 0.75, label.y.npc = "bottom") +
+  labs(x = "Model", y = "Human", color ="Model", fill = "Model") +
+  scale_color_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  scale_fill_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  theme_bw() + 
+  theme(legend.position = c(0.89,0.15),
+        legend.key.size = unit(0.5, "cm"),
+        strip.text.x = element_text(margin = margin(t = 2, b = 2)),
+        strip.text = element_text(size = 8),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+# ggsave("figures/exp1_sds.png")
+```
+

@@ -1,0 +1,584 @@
+---
+title: "Analyses for manuscript"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(lmerTest)
+library(MuMIn)
+# library(diffcor)
+library(ggpubr)
+library(patchwork)
+```
+
+# Exp 1
+## Means
+
+```{r}
+exp1_m_data <- read.csv('data/manuscript/exp1_mean_data.csv') %>%
+  pivot_longer(cols = !c(source, word), names_to = "variable", values_to = "value")
+```
+
+```{r}
+scope_data <- exp1_m_data %>%
+  filter(source == "scope") %>%
+  rename("scope" = value) %>%
+  select(!source)
+
+model_data <- exp1_m_data %>%
+  filter(source != "scope") %>%
+  mutate(model = source) %>%
+  mutate(model = factor(model)) %>%
+  select(!source)
+
+exp1_m_df <- left_join(model_data, scope_data) %>%
+  mutate(model = factor(model, levels = c("gpt35", "gpt4", "gpt4o", "gem15")),
+         variable = factor(variable)) %>%
+  group_by(model, variable) %>%
+  mutate(z_scope = as.numeric(scale(scope)),
+         z_value = as.numeric(scale(value)))
+```
+
+```{r}
+facet_labels <- c(
+  "aoa" = "AoA Rating",
+  "arousal" = "Arousal",
+  "conc" = "Concreteness",
+  "dom" = "Dominance",
+  "fam" = "Familiarity",
+  "gender" = "Gender Association",
+  "humor" = "Humorousness",
+  "image" = "Imageability",
+  "size" = "Semantic Size",
+  "social" = "Socialness",
+  "valence" = "Valence"
+)
+
+ggplot(exp1_m_df, aes(x=value, y=scope, color=model, fill=model)) +
+  facet_wrap(~variable, labeller = labeller(variable = facet_labels), scales = "free") +
+  ggh4x::facetted_pos_scales(
+    x = list(
+    variable == "aoa" ~ scale_x_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "conc" ~ scale_x_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "fam" ~ scale_x_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "gender" ~ scale_x_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "image" ~ scale_x_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "size" ~ scale_x_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "arousal" ~ scale_x_continuous(limits = c(1,9), n.breaks = 9),
+    variable == "dom" ~ scale_x_continuous(limits = c(1,9), n.breaks = 9),
+    variable == "valence" ~ scale_x_continuous(limits = c(1,9), n.breaks = 9),
+    variable == "humor" ~ scale_x_continuous(limits = c(1,5), n.breaks = 5),
+    variable == "social" ~ scale_x_continuous(limits = c(1,7), n.breaks = 7)
+  ), y = list(
+    variable == "aoa" ~ scale_y_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "conc" ~ scale_y_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "fam" ~ scale_y_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "gender" ~ scale_y_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "image" ~ scale_y_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "size" ~ scale_y_continuous(limits = c(1,7), n.breaks = 7),
+    variable == "arousal" ~ scale_y_continuous(limits = c(1,9), n.breaks = 9),
+    variable == "dom" ~ scale_y_continuous(limits = c(1,9), n.breaks = 9),
+    variable == "valence" ~ scale_y_continuous(limits = c(1,9), n.breaks = 9),
+    variable == "humor" ~ scale_y_continuous(limits = c(1,5), n.breaks = 5),
+    variable == "social" ~ scale_y_continuous(limits = c(1,7), n.breaks = 7)
+  )) +
+  geom_point(alpha=0.15, size=1, shape=1) +
+  geom_smooth(method="lm", size=0.5) +
+  stat_cor(aes(label = ..r.label..), method = "pearson", digits = 2, show.legend = F, size = 2) +
+  labs(x = "Model", y = "Human", color ="Model", fill = "Model") +
+  scale_color_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  scale_fill_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  theme_bw() + 
+  theme(legend.position = c(0.89,0.15),
+        legend.key.size = unit(0.5, "cm"),
+        strip.text.x = element_text(margin = margin(t = 2, b = 2)),
+        strip.text = element_text(size = 8),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        # panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+# ggsave("figures/exp1_means.png", width = 7.29, height = 4.5)
+```
+
+```{r}
+m1.1 <- lmer(z_scope ~ z_value * model + (1|word), data = exp1_m_df)
+summary(m1.1)
+```
+
+```{r}
+m1.2_main <- lmer(z_scope ~ z_value + variable + (1|word), data = exp1_m_df)
+m1.2_intr <- lmer(z_scope ~ z_value * variable + (1|word), data = exp1_m_df)
+
+anova(m1.2_main, m1.2_intr)
+```
+
+## SDs
+
+```{r}
+exp1_sd_data <- read.csv('data/manuscript/exp1_sd_data.csv') %>%
+  pivot_longer(cols = !c(source, word), names_to = "variable", values_to = "value")
+```
+
+```{r}
+scope_data <- exp1_sd_data %>%
+  filter(source == "scope") %>%
+  rename("scope" = value) %>%
+  select(!source)
+
+model_data <- exp1_sd_data %>%
+  filter(source != "scope") %>%
+  mutate(model = source) %>%
+  mutate(model = factor(model)) %>%
+  select(!source)
+
+exp1_sd_df <- left_join(model_data, scope_data) %>%
+  mutate(model = factor(model, levels = c("gpt35", "gpt4", "gpt4o", "gem15")),
+         variable = factor(variable)) %>%
+  group_by(model, variable) %>%
+  mutate(z_scope = as.numeric(scale(scope)),
+         z_value = as.numeric(scale(value)))
+```
+
+```{r}
+facet_labels <- c(
+  "aoa" = "AoA Rating",
+  "arousal" = "Arousal",
+  "conc" = "Concreteness",
+  "dom" = "Dominance",
+  "fam" = "Familiarity",
+  "gender" = "Gender Association",
+  "humor" = "Humorousness",
+  "image" = "Imageability",
+  "size" = "Semantic Size",
+  "social" = "Socialness",
+  "valence" = "Valence"
+)
+
+sd_limits_max <- exp1_sd_df %>%
+  group_by(variable) %>%
+  summarize(max = max(scope))
+
+ggplot(exp1_sd_df, aes(x=value, y=scope, color=model, fill=model)) +
+  facet_wrap(~variable, labeller = labeller(variable = facet_labels), scale = "free") +
+  ggh4x::facetted_pos_scales(
+   x = list(
+   variable == "aoa" ~ scale_x_continuous(limits = c(0,1.708)),
+   variable == "conc" ~ scale_x_continuous(limits = c(0,2.267)),
+   variable == "fam" ~ scale_x_continuous(limits = c(0,2.147)),
+   variable == "gender" ~ scale_x_continuous(limits = c(0,1.888)),
+   variable == "image" ~ scale_x_continuous(limits = c(0,2.198)),
+   variable == "size" ~ scale_x_continuous(limits = c(0,2.059)),
+   variable == "arousal" ~ scale_x_continuous(limits = c(0,3.157)),
+   variable == "dom" ~ scale_x_continuous(limits = c(0,3.181)),
+   variable == "valence" ~ scale_x_continuous(limits = c(0,2.461)),
+   variable == "humor" ~ scale_x_continuous(limits = c(0,1.609114)),
+   variable == "social" ~ scale_x_continuous(limits = c(0,2.492847))
+  ), y = list(
+   variable == "aoa" ~ scale_y_continuous(limits = c(0,1.708)),
+   variable == "conc" ~ scale_y_continuous(limits = c(0,2.267)),
+   variable == "fam" ~ scale_y_continuous(limits = c(0,2.147)),
+   variable == "gender" ~ scale_y_continuous(limits = c(0,1.888)),
+   variable == "image" ~ scale_y_continuous(limits = c(0,2.198)),
+   variable == "size" ~ scale_y_continuous(limits = c(0,2.059)),
+   variable == "arousal" ~ scale_y_continuous(limits = c(0,3.157)),
+   variable == "dom" ~ scale_y_continuous(limits = c(0,3.181)),
+   variable == "valence" ~ scale_y_continuous(limits = c(0,2.461)),
+   variable == "humor" ~ scale_y_continuous(limits = c(0,1.609114)),
+   variable == "social" ~ scale_y_continuous(limits = c(0,2.492847))
+  )) +
+  geom_point(alpha=0.15, size=1, shape=1) +
+  geom_smooth(method="lm", size=0.5) +
+  stat_cor(aes(label = ..r.label..), method = "pearson", digits = 3, show.legend = F, size = 2, label.x.npc = 0.7, label.y.npc = 0.25) +
+  labs(x = "Model", y = "Human", color ="Model", fill = "Model") +
+  scale_color_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  scale_fill_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  theme_bw() + 
+  theme(legend.position = c(0.89,0.15),
+        legend.key.size = unit(0.5, "cm"),
+        strip.text.x = element_text(margin = margin(t = 2, b = 2)),
+        strip.text = element_text(size = 8),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+# ggsave("figures/exp1_sds.png", width = 7.29, height = 4.5)
+```
+
+```{r}
+m2.1 <- lmer(scope ~ value + (1|word), data = exp1_sd_df)
+summary(m2.1)
+```
+
+```{r}
+m2.2_main <- lmer(z_scope ~ z_value + variable + (1|word), data = exp1_sd_df)
+m2.2_intr <- lmer(z_scope ~ z_value * variable + (1|word), data = exp1_sd_df)
+
+anova(m2.2_main, m2.2_intr)
+```
+
+```{r}
+m2.3 <- lmer(z_scope ~ z_value * model + (1|word), data = exp1_sd_df)
+summary(m2.3)
+```
+
+# Exp 2.1
+## Means
+
+```{r}
+exp2_am_data <- read.csv('data/manuscript/exp2_amean_data.csv') %>%
+  pivot_longer(cols = !c(source, word), names_to = "variable", values_to = "value")
+
+exp2_pm_data <- read.csv('data/manuscript/exp2_pmean_data.csv') %>%
+  pivot_longer(cols = !c(source, word), names_to = "variable", values_to = "value")
+
+exp2_m_data <- rbind(exp2_am_data, exp2_pm_data)
+```
+
+```{r}
+lanc_data <- exp2_m_data %>%
+  filter(source == "lanc") %>%
+  rename("lanc" = value) %>%
+  select(!source)
+
+model_data <- exp2_m_data %>%
+  filter(source != "lanc") %>%
+  mutate(model = source) %>%
+  mutate(model = factor(model)) %>%
+  select(!source)
+
+exp2_m_df <- left_join(model_data, lanc_data) %>%
+  mutate(model = factor(model, levels = c("gpt35", "gpt4", "gpt4o", "gem15")),
+         variable = factor(variable, levels = c("auditory", "gustatory", "haptic", "interoceptive",
+                                                "olfactory", "visual", "foot_leg", "hand_arm", "head",
+                                                "mouth", "torso"))) %>%
+  group_by(model, variable) %>%
+  mutate(z_lanc = as.numeric(scale(lanc)),
+         z_value = as.numeric(scale(value)))
+```
+
+```{r}
+facet_labels <- c(
+  "foot_leg" = "Foot-Leg",
+  "hand_arm" = "Hand-Arm",
+  "head" = "Head",
+  "mouth" = "Mouth",
+  "torso" = "Torso",
+  "auditory" = "Auditory",
+  "gustatory" = "Gustatory",
+  "haptic" = "Haptic",
+  "interoceptive" = "Interoceptive",
+  "olfactory" = "Olfactory",
+  "visual" = "Visual"
+)
+
+ggplot(exp2_m_df, aes(x=value, y=lanc, color=model, fill=model)) +
+  facet_wrap(~variable, labeller = labeller(variable = facet_labels), scales = "free") +
+  ggh4x::facetted_pos_scales(
+    x = list(
+    variable == "foot_leg" ~ scale_x_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "hand_arm" ~ scale_x_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "head" ~ scale_x_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "mouth" ~ scale_x_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "torso" ~ scale_x_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "auditory" ~ scale_x_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "gustatory" ~ scale_x_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "haptic" ~ scale_x_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "interoceptive" ~ scale_x_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "olfactory" ~ scale_x_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "visual" ~ scale_x_continuous(limits = c(0,5), n.breaks = 6)
+  ), y = list(
+    variable == "foot_leg" ~ scale_y_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "hand_arm" ~ scale_y_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "head" ~ scale_y_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "mouth" ~ scale_y_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "torso" ~ scale_y_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "auditory" ~ scale_y_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "gustatory" ~ scale_y_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "haptic" ~ scale_y_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "interoceptive" ~ scale_y_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "olfactory" ~ scale_y_continuous(limits = c(0,5), n.breaks = 6),
+    variable == "visual" ~ scale_y_continuous(limits = c(0,5), n.breaks = 6)
+  )) +
+  geom_point(alpha=0.15, size=1, shape=1) +
+  geom_smooth(method="lm", size=0.5) +
+  stat_cor(aes(label = ..r.label..), method = "pearson", digits = 2, show.legend = F, size = 2, label.x.npc = 0.75, label.y.npc = 0.25) +
+  labs(x = "Model", y = "Human", color ="Model", fill = "Model") +
+  scale_color_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  scale_fill_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  theme_bw() + 
+  theme(legend.position = c(0.89,0.15),
+        legend.key.size = unit(0.5, "cm"),
+        strip.text.x = element_text(margin = margin(t = 2, b = 2)),
+        strip.text = element_text(size = 8),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        # panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+# ggsave("figures/exp2_means.png", width = 7.29, height = 4.5)
+```
+
+```{r}
+m3.1 <- lmer(lanc ~ value + (1|word), data = exp2_m_df)
+summary(m3.1)
+```
+
+```{r}
+m3.2_main <- lmer(z_lanc ~ z_value + variable + (1|word), data = exp2_m_df)
+m3.2_intr <- lmer(z_lanc ~ z_value * variable + (1|word), data = exp2_m_df)
+
+anova(m3.2_main, m3.2_intr)
+```
+
+```{r}
+m3.3 <- lmer(z_lanc ~ z_value * model + (1|word), data = exp2_m_df)
+summary(m3.3)
+```
+
+## SDs
+
+```{r}
+exp2_asd_data <- read.csv('data/manuscript/exp2_asd_data.csv') %>%
+  pivot_longer(cols = !c(source, word), names_to = "variable", values_to = "value")
+
+exp2_psd_data <- read.csv('data/manuscript/exp2_psd_data.csv') %>%
+  pivot_longer(cols = !c(source, word), names_to = "variable", values_to = "value")
+
+exp2_sd_data <- rbind(exp2_asd_data, exp2_psd_data)
+```
+
+```{r}
+lanc_data <- exp2_sd_data %>%
+  filter(source == "lanc") %>%
+  rename("lanc" = value) %>%
+  select(!source)
+
+model_data <- exp2_sd_data %>%
+  filter(source != "lanc") %>%
+  mutate(model = source) %>%
+  mutate(model = factor(model)) %>%
+  select(!source)
+
+exp2_sd_df <- left_join(model_data, lanc_data) %>%
+  mutate(model = factor(model, levels = c("gpt35", "gpt4", "gpt4o", "gem15")),
+         variable = factor(variable, levels = c("auditory", "gustatory", "haptic", "interoceptive",
+                                                "olfactory", "visual", "foot_leg", "hand_arm", "head",
+                                                "mouth", "torso"))) %>%
+  group_by(model, variable) %>%
+  mutate(z_lanc = as.numeric(scale(lanc)),
+         z_value = as.numeric(scale(value)))
+```
+
+```{r}
+facet_labels <- c(
+  "foot_leg" = "Foot-Leg",
+  "hand_arm" = "Hand-Arm",
+  "head" = "Head",
+  "mouth" = "Mouth",
+  "torso" = "Torso",
+  "auditory" = "Auditory",
+  "gustatory" = "Gustatory",
+  "haptic" = "Haptic",
+  "interoceptive" = "Interoceptive",
+  "olfactory" = "Olfactory",
+  "visual" = "Visual"
+)
+
+sd_limits_max <- exp2_sd_df %>%
+  group_by(variable) %>%
+  summarize(max = max(lanc))
+
+ggplot(exp2_sd_df, aes(x=value, y=lanc, color=model, fill=model)) +
+  facet_wrap(~variable, labeller = labeller(variable = facet_labels), scales = "free") +
+  ggh4x::facetted_pos_scales(
+    x = list(
+    variable == "foot_leg" ~ scale_x_continuous(limits = c(0,2.312936)),
+    variable == "hand_arm" ~ scale_x_continuous(limits = c(0,2.359275)),
+    variable == "head" ~ scale_x_continuous(limits = c(0,2.370270)),
+    variable == "mouth" ~ scale_x_continuous(limits = c(0,2.357716)),
+    variable == "torso" ~ scale_x_continuous(limits = c(0,2.422323)),
+    variable == "auditory" ~ scale_x_continuous(limits = c(0,2.296242)),
+    variable == "gustatory" ~ scale_x_continuous(limits = c(0,2.284861)),
+    variable == "haptic" ~ scale_x_continuous(limits = c(0,2.236068)),
+    variable == "interoceptive" ~ scale_x_continuous(limits = c(0,2.294014)),
+    variable == "olfactory" ~ scale_x_continuous(limits = c(0,2.342089)),
+    variable == "visual" ~ scale_x_continuous(limits = c(0,2.390955))
+  ), y = list(
+    variable == "foot_leg" ~ scale_y_continuous(limits = c(0,2.312936)),
+    variable == "hand_arm" ~ scale_y_continuous(limits = c(0,2.359275)),
+    variable == "head" ~ scale_y_continuous(limits = c(0,2.370270)),
+    variable == "mouth" ~ scale_y_continuous(limits = c(0,2.357716)),
+    variable == "torso" ~ scale_y_continuous(limits = c(0,2.422323)),
+    variable == "auditory" ~ scale_y_continuous(limits = c(0,2.296242)),
+    variable == "gustatory" ~ scale_y_continuous(limits = c(0,2.284861)),
+    variable == "haptic" ~ scale_y_continuous(limits = c(0,2.236068)),
+    variable == "interoceptive" ~ scale_y_continuous(limits = c(0,2.294014)),
+    variable == "olfactory" ~ scale_y_continuous(limits = c(0,2.342089)),
+    variable == "visual" ~ scale_y_continuous(limits = c(0,2.390955))
+  )) +
+  geom_point(alpha=0.15, size=1, shape=1) +
+  geom_smooth(method="lm", size=0.5) +
+  stat_cor(aes(label = ..r.label..), method = "pearson", digits = 2, show.legend = F, size = 2, label.x.npc = 0.7, label.y.npc = 0.25) +
+  labs(x = "Model", y = "Human", color ="Model", fill = "Model") +
+  scale_color_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  scale_fill_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  theme_bw() + 
+  theme(legend.position = c(0.89,0.15),
+        legend.key.size = unit(0.5, "cm"),
+        strip.text.x = element_text(margin = margin(t = 2, b = 2)),
+        strip.text = element_text(size = 8),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+# ggsave("figures/exp2_sds.png", width = 7.29, height = 4.5)
+```
+
+```{r}
+m4.1 <- lmer(lanc ~ value + (1|word), data = exp2_sd_df)
+summary(m4.1)
+```
+
+```{r}
+m4.2_main <- lmer(z_lanc ~ z_value + variable + (1|word), data = exp2_sd_df)
+m4.2_intr <- lmer(z_lanc ~ z_value * variable + (1|word), data = exp2_sd_df)
+
+anova(m4.2_main, m4.2_intr)
+```
+
+```{r}
+m4.3 <- lmer(z_lanc ~ z_value * model + (1|word), data = exp2_sd_df)
+summary(m4.3)
+```
+
+# Exp 2.2: context manipulation
+
+```{r}
+exp2_am_context <- read.csv('data/manuscript/exp2_amean_contextmanip.csv') %>%
+  pivot_longer(cols = !c(source, word), names_to = "variable", values_to = "value")
+
+exp2_pm_context <- read.csv('data/manuscript/exp2_pmean_contextmanip.csv') %>%
+  pivot_longer(cols = !c(source, word), names_to = "variable", values_to = "value")
+
+exp2_m_context <- rbind(exp2_am_context, exp2_pm_context)
+```
+
+```{r}
+lanc_data <- exp2_m_data %>%
+  filter(source == "lanc") %>%
+  rename("lanc" = value) %>%
+  select(!source)
+
+binned_data <- exp2_m_context %>%
+  filter(source != "lanc") %>%
+  mutate(model = source) %>%
+  mutate(model = factor(model)) %>%
+  select(!source) %>%
+  group_by(variable, word) %>%
+  summarise(binned = mean(value))
+
+orig_data <- exp2_m_df %>%
+  group_by(variable, word) %>%
+  summarise(orig = mean(value))
+
+model_data <- left_join(binned_data, orig_data)
+
+exp2_m_context_df <- left_join(model_data, lanc_data) %>%
+  filter(variable %in% c("visual", "mouth")) %>%
+  mutate(variable = factor(variable, levels = c("visual", "mouth"))) %>%
+  pivot_longer(cols = c(binned, orig), names_to = "condition", values_to = "value") %>%
+  mutate(condition = factor(condition, levels = c("orig", "binned")))
+```
+
+```{r}
+exp2_asd_context <- read.csv('data/manuscript/exp2_asd_contextmanip.csv') %>%
+  pivot_longer(cols = !c(source, word), names_to = "variable", values_to = "value")
+
+exp2_psd_context <- read.csv('data/manuscript/exp2_psd_contextmanip.csv') %>%
+  pivot_longer(cols = !c(source, word), names_to = "variable", values_to = "value")
+
+exp2_sd_context <- rbind(exp2_asd_context, exp2_psd_context)
+```
+
+```{r}
+lanc_data <- exp2_sd_data %>%
+  filter(source == "lanc") %>%
+  rename("lanc" = value) %>%
+  select(!source)
+
+binned_data <- exp2_sd_context %>%
+  filter(source != "lanc") %>%
+  mutate(model = source) %>%
+  mutate(model = factor(model)) %>%
+  select(!source) %>%
+  group_by(variable, word) %>%
+  summarise(binned = mean(value))
+
+orig_data <- exp2_sd_df %>%
+  group_by(variable, word) %>%
+  summarise(orig = mean(value))
+
+model_data <- left_join(binned_data, orig_data)
+
+exp2_sd_context_df <- left_join(model_data, lanc_data) %>%
+  filter(variable %in% c("visual", "mouth")) %>%
+  mutate(variable = factor(variable, levels = c("visual", "mouth"))) %>%
+  pivot_longer(cols = c(binned, orig), names_to = "condition", values_to = "value") %>%
+  mutate(condition = factor(condition, levels = c("orig", "binned")))
+```
+
+```{r}
+exp2_m_context_df$measure <- "m"
+exp2_sd_context_df$measure <- "sd"
+
+exp2_context_df <- rbind(exp2_m_context_df, exp2_sd_context_df) %>%
+  mutate(measure = factor(measure, levels = c("m", "sd"))) %>%
+  group_by(measure, variable, condition) %>%
+  mutate(z_lanc = as.numeric(scale(lanc)),
+         z_value = as.numeric(scale(value)))
+```
+
+```{r}
+facet_labels_var <- c(
+  "mouth" = "Mouth",
+  "visual" = "Visual"
+)
+
+facet_labels_meas <- c(
+  "m" = "Mean",
+  "sd" = "SD"
+)
+
+ggplot(exp2_context_df, aes(x=z_value, y=z_lanc, color=condition, fill=condition)) +
+  facet_grid(measure ~ variable, labeller = labeller(measure = facet_labels_meas, variable = facet_labels_var), scales = "free") +
+  geom_point(alpha=0.15, size=1, shape=1) +
+  geom_smooth(method="lm", size=0.5,) +
+  stat_cor(aes(label = ..r.label..), method = "pearson", digits = 2, show.legend = F, size = 3, label.x.npc = 0.75, label.y.npc = 0.25) +
+  labs(x = "Model", y = "Human", color = "Condition", fill = "Condition") +
+  scale_color_discrete(labels = c("orig" = "Original", "binned" = "Binned")) +
+  scale_fill_discrete(labels = c("orig" = "Original", "binned" = "Binned")) +
+  theme_bw() + 
+  theme(panel.grid.minor = element_blank())
+
+# ggsave("figures/exp2_binned.png", width = 7.29, height = 4.5)
+```
+
+```{r}
+diffcor.two(r1 = 0.64, r2 = 0.75, n1 = 384, n2 = 384)
+diffcor.two(r1 = 0.64, r2 = 0.77, n1 = 384, n2 = 384)
+diffcor.two(r1 = 0.086, r2 = -0.23, n1 = 384, n2 = 384)
+diffcor.two(r1 = 0.35, r2 = 0.53, n1 = 384, n2 = 384)
+```
+
