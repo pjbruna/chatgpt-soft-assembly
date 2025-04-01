@@ -344,6 +344,16 @@ m3.3 <- lmer(z_lanc ~ z_value * model + (1|word), data = exp2_m_df)
 summary(m3.3)
 ```
 
+```{r}
+exp2_m_df <- exp2_m_df %>%
+  mutate(type = case_when(
+    variable %in% c("auditory", "gustatory", "haptic", "interoceptive", "olfactory", "visual") ~ "perceptual",
+    TRUE ~ "motor"))
+
+m3.4 <- lmer(z_lanc ~ z_value * type + (1|word), data = exp2_m_df)
+summary(m3.4)
+```
+
 ## SDs
 
 ```{r}
