@@ -573,7 +573,7 @@ facet_labels_meas <- c(
 
 ggplot(exp2_context_df, aes(x=z_value, y=z_lanc, color=condition, fill=condition)) +
   facet_grid(measure ~ variable, labeller = labeller(measure = facet_labels_meas, variable = facet_labels_var), scales = "free") +
-  geom_point(alpha=0.15, size=1, shape=1) +
+  geom_point(alpha=0.3, size=1, shape=1) +
   geom_smooth(method="lm", size=0.5,) +
   stat_cor(aes(label = ..r.label..), method = "pearson", digits = 2, show.legend = F, size = 3, label.x.npc = 0.75, label.y.npc = 0.25) +
   labs(x = "Model", y = "Human", color = "Condition", fill = "Condition") +
@@ -591,4 +591,182 @@ diffcor.two(r1 = 0.64, r2 = 0.77, n1 = 384, n2 = 384)
 diffcor.two(r1 = 0.086, r2 = -0.23, n1 = 384, n2 = 384)
 diffcor.two(r1 = 0.35, r2 = 0.53, n1 = 384, n2 = 384)
 ```
+
+# Exp 3
+
+```{r}
+exp3_data <- read.csv('data/manuscript/exp3_data.csv') %>%
+   pivot_longer(cols = !c(source, measure, word), names_to = "variable", values_to = "value")
+```
+
+```{r}
+scope_data <- exp3_data %>%
+  filter(source == "scope") %>%
+  rename("scope" = value) %>%
+  select(!source)
+
+model_data <- exp3_data %>%
+  filter(source != "scope") %>%
+  mutate(model = source) %>%
+  mutate(model = factor(model)) %>%
+  select(!source)
+
+exp3_df <- left_join(model_data, scope_data) %>%
+  mutate(model = factor(model, levels = c("gpt35", "gpt4", "gpt4o", "gem15"))) %>%
+  group_by(model, measure, variable) %>%
+  mutate(z_scope = as.numeric(scale(scope)),
+         z_value = as.numeric(scale(value)))
+```
+
+```{r}
+facet_labels_meas <- c(
+  "m" = "Mean",
+  "sd" = "SD"
+)
+
+facet_labels_var <- c(
+  "ld" = "Lexical Decision",
+  "nm" = "Word Naming"
+)
+
+exp3_m_ld_plot <- ggplot(exp3_df %>% filter(measure == "m", variable == "ld"), aes(x=value, y=scope, color=model, fill=model)) +
+  facet_grid(~ variable, labeller = labeller(measure = facet_labels_meas, variable = facet_labels_var), scales = "free") +
+  geom_point(alpha=0.15, size=1, shape=1) +
+  geom_smooth(method="lm", size=0.5,) +
+  stat_cor(aes(label = ..r.label..), method = "pearson", digits = 2, show.legend = F, size = 2) +
+  labs(x = "Model", y = "Human", color = "Model", fill = "Model") +
+  scale_color_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  scale_fill_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  theme_bw() + 
+  theme(panel.grid.minor = element_blank())
+
+exp3_m_nm_plot <- ggplot(exp3_df %>% filter(measure == "m", variable == "nm"), aes(x=value, y=scope, color=model, fill=model)) +
+  facet_grid(measure ~ variable, labeller = labeller(measure = facet_labels_meas, variable = facet_labels_var), scales = "free") +
+  geom_point(alpha=0.15, size=1, shape=1) +
+  geom_smooth(method="lm", size=0.5,) +
+  stat_cor(aes(label = ..r.label..), method = "pearson", digits = 2, show.legend = F, size = 2) +
+  labs(x = "Model", y = "Human", color = "Model", fill = "Model") +
+  scale_color_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  scale_fill_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  theme_bw() + 
+  theme(panel.grid.minor = element_blank())
+
+exp3_sd_ld_plot <- ggplot(exp3_df %>% filter(measure == "sd", variable == "ld"), aes(x=value, y=scope, color=model, fill=model)) +
+  geom_point(alpha=0.15, size=1, shape=1) +
+  geom_smooth(method="lm", size=0.5,) +
+  stat_cor(aes(label = ..r.label..), method = "pearson", digits = 2, show.legend = F, size = 2, label.x.npc = 0.8) +
+  labs(x = "Model", y = "Human", color = "Model", fill = "Model") +
+  scale_color_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  scale_fill_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  theme_bw() + 
+  theme(panel.grid.minor = element_blank())
+
+exp3_sd_nm_plot <- ggplot(exp3_df %>% filter(measure == "sd", variable == "nm"), aes(x=value, y=scope, color=model, fill=model)) +
+  facet_wrap(~ measure, labeller = labeller(measure = facet_labels_meas, variable = facet_labels_var), scales = "free", strip.position = "right") +
+  geom_point(alpha=0.15, size=1, shape=1) +
+  geom_smooth(method="lm", size=0.5,) +
+  stat_cor(aes(label = ..r.label..), method = "pearson", digits = 2, show.legend = F, size = 2, label.x.npc = 0.8) +
+  labs(x = "Model", y = "Human", color = "Model", fill = "Model") +
+  scale_color_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  scale_fill_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  theme_bw() + 
+  theme(panel.grid.minor = element_blank())
+
+patch_plot <- (exp3_m_ld_plot + exp3_m_nm_plot) / (exp3_sd_ld_plot + exp3_sd_nm_plot) +
+  plot_layout(guides = "collect") &
+  plot_annotation(caption = "Model") &
+  theme(plot.caption = element_text(size = 12, hjust = 0.42)) &
+  ylab(NULL) &
+  xlab(NULL)
+
+fig3 <- wrap_elements(patch_plot) +
+  labs(tag = "Human") +
+  theme(
+    plot.tag = element_text(size = 12, angle = 90),
+    plot.tag.position = "left"
+  )
+
+fig3
+
+# ggsave(fig3, file = "figures/exp3_1.png", width = 7.29, height = 4.5)
+```
+
+```{r}
+facet_labels <- c(
+  "freq" = "Frequency",
+  "cd" = "Contextual Diversity"
+)
+
+ggplot(exp3_df %>% filter(variable %in% c("freq", "cd"), measure == "m"), aes(x=value, y=scope, color=model, fill=model)) +
+  facet_wrap(~ variable, labeller = labeller(variable = facet_labels), scales = "free") +
+  ggh4x::facetted_pos_scales(
+    x = list(
+    variable == "freq" ~ scale_x_continuous(limits = c(2,10)),
+    variable == "cd" ~ scale_x_continuous(limits = c(3,7))
+  ), y = list(
+    variable == "freq" ~ scale_y_continuous(limits = c(1,5)),
+    variable == "cd" ~ scale_y_continuous(limits = c(1,4))
+  )) +
+  geom_point(alpha=0.3, size=1, shape=1) +
+  geom_smooth(method="lm", size=0.5,) +
+  stat_cor(aes(label = ..r.label..), method = "pearson", digits = 2, show.legend = F, size = 2) +
+  labs(x = "Model", y = "Human", color = "Model", fill = "Model") +
+  scale_color_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  scale_fill_discrete(labels = c("gpt35" = "GPT-3.5", "gpt4" = "GPT-4", "gpt4o" = "GPT-4o", "gem15" = "Gemini")) +
+  theme_bw() + 
+  theme(panel.grid.minor = element_blank())
+
+# ggsave("figures/exp3_2.png", width = 7.29, height = 4.5)
+```
+
+
+```{r}
+m5.1 <- lmer(scope ~ value + (1|word), data = exp3_df %>% filter(measure == "m"))
+summary(m5.1)
+```
+
+```{r}
+m5.2 <- lmer(scope ~ value + (1|word), data = exp3_df %>% filter(measure == "sd"))
+summary(m5.2)
+```
+
+```{r}
+m5.3_main <- lmer(z_scope ~ z_value + model + (1|word), data = exp3_df %>% filter(measure == "m"))
+m5.3_intr <- lmer(z_scope ~ z_value * model + (1|word), data = exp3_df %>% filter(measure == "m"))
+
+anova(m5.3_main, m5.3_intr)
+```
+## Predictors
+
+```{r}
+exp3_predictors <- read.csv('data/manuscript/exp3_predictors.csv') %>%
+  select(!source)
+```
+
+```{r}
+model_data <- exp3_data %>%
+  filter(measure == "m") %>%
+  mutate(source = factor(source)) %>%
+  select(!measure)
+
+exp3_pred_df <- left_join(model_data, exp3_predictors) %>%
+  mutate(source = factor(source, levels = c("scope", "gpt35", "gpt4", "gpt4o", "gem15"))) %>%
+  pivot_wider(names_from = variable, values_from = value) %>%
+  group_by(source) %>%
+  mutate(z_freq = as.numeric(scale(freq)),
+         z_nlett = as.numeric(scale(nlett)),
+         z_ld = as.numeric(scale(ld)),
+         z_nm = as.numeric(scale(nm)))
+```
+
+```{r}
+m6.1 <- lmer(z_ld ~ z_freq * `source` + z_nlett * `source` + (1|word), data = exp3_pred_df)
+summary(m6.1)
+```
+
+```{r}
+m6.2 <- lmer(z_nm ~ z_freq * `source` + z_nlett * `source` + (1|word), data = exp3_pred_df)
+summary(m6.2)
+```
+
 
